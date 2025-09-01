@@ -28,8 +28,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/v1/auth", (await import("./routes/v1/auth/index.js")).default);
 
-// admin routes
+// product routes
 app.use("/api/v1/", (await import("./routes/v1/products.js")).default);
+
+// user routes
+app.use("/api/v1/", (await import("./routes/v1/user/index.js")).default);
 
 app.use(globalErrorHandler);
 

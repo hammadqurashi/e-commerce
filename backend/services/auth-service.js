@@ -4,23 +4,22 @@ import jwt from "jsonwebtoken";
 import BaseService from "./base-service.js";
 import AppConfig from "../config/app-config.js";
 import User from "../models/user.js";
+import stripeService from "./user/stripe-service.js";
 
 class AuthService extends BaseService {
   async createUser(data) {
     try {
       const { userName, email, phone, password, profileImg } = data;
 
-      // const fullName = `${firstName ?? ""} ${lastName ?? ""}`;
+      const stripeCustomerId = await stripeService.createUser(userName, email);
 
-      // const stripeCustomerId = await stripeService.createUser(fullName, email);
-
-      // if (!stripeCustomerId) {
-      //   return this.handleResponse(
-      //     400,
-      //     false,
-      //     "Error creating account, please try again."
-      //   );
-      // }
+      if (!stripeCustomerId) {
+        return this.handleResponse(
+          400,
+          false,
+          "Error creating account, please try again."
+        );
+      }
 
       const salt = bcrypt.genSaltSync(10);
       const hashedPassword = bcrypt.hashSync(password, salt);
@@ -33,6 +32,7 @@ class AuthService extends BaseService {
         role: "user",
         phone: phone.trim(),
         profileImg,
+        stripeCustomerId,
       });
 
       await user.save();
