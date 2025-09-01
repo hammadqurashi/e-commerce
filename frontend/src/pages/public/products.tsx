@@ -82,10 +82,12 @@ export default function Products() {
 
           {!isFetching && products.length > 0 && (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 min-h-[400px]">
-                {products.map((product) => (
-                  <ProductCard key={product._id} product={product} />
-                ))}
+              <div className="min-h-[400px]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ">
+                  {products.map((product) => (
+                    <ProductCard key={product._id} product={product} />
+                  ))}
+                </div>
               </div>
 
               <div className="my-12">
