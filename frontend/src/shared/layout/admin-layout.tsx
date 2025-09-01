@@ -11,7 +11,7 @@ import { Badge } from "@/shared/components/ui/badge";
 import { cn } from "@/core/lib/utils";
 
 const navigation = [
-  { name: "All Products", href: "/admin/products", icon: Package, count: 24 },
+  { name: "All Products", href: "/admin/products", icon: Package },
   { name: "Create Product", href: "/admin/products/create", icon: Plus },
 ];
 
@@ -45,11 +45,6 @@ const AdminLayout = () => {
                 <item.icon className="mr-3 h-4 w-4" />
                 {item.name}
               </div>
-              {item.count && (
-                <Badge variant="secondary" className="ml-auto">
-                  {item.count}
-                </Badge>
-              )}
             </Link>
           ))}
         </div>

@@ -13,6 +13,7 @@ import UpdateProduct from "./pages/private/update-product";
 import NotFound from "./pages/public/not-found";
 import CheckoutSuccess from "./pages/private/checkout.success";
 import CheckoutError from "./pages/private/checkout.error";
+import ProtectedRoute from "./shared/guards/protected-route";
 
 function App() {
   return (
@@ -34,7 +35,14 @@ function App() {
             <Route path="checkout/cancel" element={<CheckoutError />} />
           </Route>
 
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="products" element={<AllProductsPage />} />
             <Route path="products/create" element={<CreateProduct />} />
             <Route
