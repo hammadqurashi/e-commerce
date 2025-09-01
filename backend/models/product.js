@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
-import Counter from "./counter";
-import { createURLFromString } from "../utils";
+import Counter from "./counter.js";
+import { createURLFromString } from "../utils/index.js";
 
 const productSchema = new Schema(
   {

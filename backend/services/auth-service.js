@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-import BaseService from "../base-service.js";
-import AppConfig from "../../config/app-config.js";
-import User from "../../models/user.js";
+import BaseService from "./base-service.js";
+import AppConfig from "../config/app-config.js";
+import User from "../models/user.js";
 
 class AuthService extends BaseService {
   async createUser(data) {
@@ -88,6 +88,7 @@ class AuthService extends BaseService {
 
       return this.handleResponse(200, true, "Login successfull", {
         token,
+        role: user.role,
       });
     } catch (err) {
       return this.handleError(err);

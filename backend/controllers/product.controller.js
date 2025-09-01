@@ -1,4 +1,4 @@
-import productService from "../../services/admin/product-service";
+import productService from "../services/product-service.js";
 
 const productController = {
   addProduct: async (req, res) => {

@@ -5,6 +5,7 @@ import { configDotenv } from "dotenv";
 
 import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import connectDB from "./lib/connectDb.js";
 import globalErrorHandler from "./lib/global-error-handler.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -28,7 +29,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/v1/auth", (await import("./routes/v1/auth/index.js")).default);
 
 // admin routes
-app.use("/api/v1/admin", (await import("./routes/v1/admin/index.js")).default);
+app.use("/api/v1/", (await import("./routes/v1/products.js")).default);
 
 app.use(globalErrorHandler);
 

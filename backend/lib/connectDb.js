@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import AppConfig from "../config/app-config";
+import AppConfig from "../config/app-config.js";
 
-export const connectDB = async () => {
+const connectDB = async () => {
   if (mongoose.connections[0].readyState) {
     console.log("Mongodb already connected");
   } else {
@@ -16,4 +16,4 @@ export const connectDB = async () => {
   }
 };
 
-export * from ".";
+export default connectDB;

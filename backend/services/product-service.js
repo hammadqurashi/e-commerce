@@ -1,6 +1,6 @@
-import BaseService from "../base-service.js";
-import Product from "../../models/product.js";
-import cloudinary from "../../lib/cloudinary.js";
+import BaseService from "./base-service.js";
+import Product from "../models/product.js";
+import cloudinary from "../lib/cloudinary.js";
 
 class ProductService extends BaseService {
   async uploadImages(images = []) {
@@ -31,7 +31,6 @@ class ProductService extends BaseService {
         size,
         inStock,
         totalStock,
-        soldCount,
       } = data;
 
       const images = this.uploadImages(rawImages);
@@ -46,7 +45,6 @@ class ProductService extends BaseService {
         images,
         inStock,
         totalStock,
-        soldCount,
       });
 
       await product.save();
@@ -97,7 +95,6 @@ class ProductService extends BaseService {
         size,
         inStock,
         totalStock,
-        soldCount,
       } = data;
 
       let images;
@@ -116,7 +113,6 @@ class ProductService extends BaseService {
         images,
         inStock,
         totalStock,
-        soldCount,
       });
 
       if (!product) {

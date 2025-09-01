@@ -1,7 +1,6 @@
 import { Router } from "express";
-import { authCheck } from "../../../middlewares";
-import authController from "../../../controllers/auth.controller";
-import { uploadImage } from "../../../lib/image-uploader";
+import { authCheck } from "../../../middlewares/index.js";
+import authController from "../../../controllers/auth.controller.js";
 
 const router = Router();
 
