@@ -11,6 +11,8 @@ import AllProductsPage from "./pages/private/all-products";
 import CreateProduct from "./pages/private/create-product";
 import UpdateProduct from "./pages/private/update-product";
 import NotFound from "./pages/public/not-found";
+import CheckoutSuccess from "./pages/private/checkout.success";
+import CheckoutError from "./pages/private/checkout.error";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
               element={<ProductDetailPage />}
             />
             <Route path="cart" element={<CartPage />} />
+            <Route path="checkout/success" element={<CheckoutSuccess />} />
+            <Route path="checkout/cancel" element={<CheckoutError />} />
           </Route>
 
           <Route path="/admin" element={<AdminLayout />}>

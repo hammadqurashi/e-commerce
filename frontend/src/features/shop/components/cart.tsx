@@ -1,5 +1,5 @@
-import { ChevronLeft, Heart, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/shared/components/ui/button";
 import {
   Select,
@@ -12,13 +12,23 @@ import { Separator } from "@/shared/components/ui/separator";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { cartActions } from "@/store/cart";
+import checkoutService from "@/core/services/api/checkout-service";
+import { toast } from "sonner";
+import { useState } from "react";
+import LoadingSpinner from "@/shared/components/ui/loading-spinner";
 
 const Cart = () => {
   const dispatch = useDispatch();
 
+  const navigate = useNavigate();
+
+  const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
+
   const { items, shipping, subtotal, total } = useSelector(
     (state: RootState) => state.cart
   );
+
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   if (items.length === 0) {
     return (
@@ -38,9 +48,38 @@ const Cart = () => {
     );
   }
 
+  const proceedToPay = async () => {
+    if (!isLoggedIn) {
+      toast.error("Please login to your account.");
+      navigate("/auth");
+
+      return;
+    }
+
+    setIsCreatingCheckout(true);
+
+    const payloadItems = items.map((p) => ({
+      productId: p.product._id,
+      quantity: p.quantity,
+    }));
+
+    const res = await checkoutService.createCheckoutSession({
+      items: payloadItems,
+    });
+
+    setIsCreatingCheckout(false);
+
+    if (res.success && res.data?.url) {
+      window.location.href = res.data.url;
+
+      return;
+    }
+
+    toast.error(res.msg);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Back Navigation */}
       <div className="flex items-center gap-2 mb-6">
         <ChevronLeft className="h-4 w-4" />
         <Link to="/" className="font-body text-sm hover:text-primary">
@@ -171,13 +210,17 @@ const Cart = () => {
               </p>
             </div>
 
-            <Button className="w-full font-body bg-primary text-primary-foreground mb-4">
-              Checkout
+            <Button
+              className="w-full font-body bg-primary text-primary-foreground mb-4"
+              onClick={proceedToPay}
+              disabled={isCreatingCheckout}
+            >
+              {isCreatingCheckout ? <LoadingSpinner size="sm" /> : "Checkout"}
             </Button>
 
             <div className="space-y-3">
               <h3 className="font-body text-sm font-medium">Need Help?</h3>
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <Button
                   variant="link"
                   className="font-body text-xs p-0 h-auto justify-start"

@@ -37,7 +37,7 @@ const ProductDetail = ({ product }: { product: Product }) => {
     }
 
     if (product.colour && !selectedColor) {
-      toast.error("Please select a size");
+      toast.error("Please select color");
       return;
     }
 
