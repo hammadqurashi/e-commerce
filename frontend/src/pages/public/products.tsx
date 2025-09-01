@@ -5,6 +5,8 @@ import productService from "@/core/services/api/product-service";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import ProductsPagination from "@/features/shop/components/products-pagination";
+import { Button } from "@/shared/components/ui/button";
+import { Filter } from "lucide-react";
 
 export default function Products() {
   const [filters, setFilters] = useState<{ sizes: string[]; colors: string[] }>(
@@ -12,6 +14,8 @@ export default function Products() {
   );
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [isOpenMobileFilters, setIsOpenMobileFilters] = useState(false);
 
   const { data, isFetching } = useQuery({
     queryKey: ["all-products", filters, currentPage],
@@ -38,6 +42,10 @@ export default function Products() {
     []
   );
 
+  const openMobileFilters = () => {
+    setIsOpenMobileFilters(true);
+  };
+
   const { products = [], totalPages = 0 } = data || {};
 
   return (
@@ -46,16 +54,30 @@ export default function Products() {
         <ProductSidebar
           onFilterChange={handleFilterChange}
           selectedFilters={filters}
+          isOpenMobileFilters={isOpenMobileFilters}
+          setIsOpenMobileFilters={setIsOpenMobileFilters}
         />
 
         <main className="flex-1">
-          <div className="mb-6">
-            <h1 className="font-heading text-2xl font-medium mb-2">
-              Explore Collection
-            </h1>
-            <p className="font-body text-sm text-muted-foreground">
-              Explore The Various Collection of My Shop
-            </p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="font-heading text-2xl font-medium mb-2">
+                Explore Collection
+              </h1>
+              <p className="font-body text-sm text-muted-foreground">
+                Explore The Various Collection of My Shop
+              </p>
+            </div>
+
+            <div className="md:hidden">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={openMobileFilters}
+              >
+                <Filter className="h-4 w-4" /> Filters
+              </Button>
+            </div>
           </div>
 
           {!isFetching && products.length > 0 && (
