@@ -23,14 +23,20 @@ function App() {
           {/* Public Web Pages */}
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Products />} />
-            <Route path="product/:id" element={<ProductDetailPage />} />
+            <Route
+              path="product/:productSlug"
+              element={<ProductDetailPage />}
+            />
             <Route path="cart" element={<CartPage />} />
           </Route>
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="products" element={<AllProductsPage />} />
             <Route path="products/create" element={<CreateProduct />} />
-            <Route path="products/:id/edit" element={<UpdateProduct />} />
+            <Route
+              path="products/:productSlug/edit"
+              element={<UpdateProduct />}
+            />
           </Route>
 
           <Route path="*" element={<NotFound />} />
