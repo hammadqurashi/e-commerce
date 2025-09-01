@@ -7,11 +7,11 @@ import productService from "@/core/services/api/product-service";
 import PageSpinner from "@/shared/components/ui/page-spinner";
 
 const UpdateProduct = () => {
-  const { id: productId } = useParams();
+  const { productSlug } = useParams();
 
   const { data, isFetching } = useQuery({
-    queryKey: ["update-product", productId],
-    queryFn: () => productService.getById(productId!),
+    queryKey: ["update-product", productSlug],
+    queryFn: () => productService.getBySlug(productSlug!),
     refetchOnWindowFocus: false,
   });
 
@@ -19,7 +19,7 @@ const UpdateProduct = () => {
     return <PageSpinner />;
   }
 
-  if (!productId) {
+  if (!productSlug) {
     return <NotFound />;
   }
 

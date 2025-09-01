@@ -19,15 +19,16 @@ import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { cartActions } from "@/store/cart";
 import type { Product } from "../types";
+import { PRODUCT_COLORS, PRODUCT_SIZES } from "@/core/constants";
+import { Badge } from "@/shared/components/ui/badge";
 
 const ProductDetail = ({ product }: { product: Product }) => {
   const dispatch = useDispatch();
 
-  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedSize, setSelectedSize] = useState("S");
+  const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [warrantyOpen, setWarrantyOpen] = useState(false);
-  const [maintenanceOpen, setMaintenanceOpen] = useState(false);
 
   const handleAddToCart = () => {
     if (product.size && !selectedSize) {
@@ -35,7 +36,19 @@ const ProductDetail = ({ product }: { product: Product }) => {
       return;
     }
 
-    dispatch(cartActions.addItem({ product, quantity, size: selectedSize }));
+    if (product.colour && !selectedColor) {
+      toast.error("Please select a size");
+      return;
+    }
+
+    dispatch(
+      cartActions.addItem({
+        product,
+        quantity,
+        size: selectedSize,
+        color: selectedColor,
+      })
+    );
     dispatch(cartActions.setIsOpen(true));
     toast.success(`${product.name} has been added to your cart.`);
   };
@@ -72,12 +85,17 @@ const ProductDetail = ({ product }: { product: Product }) => {
         {/* Product Info */}
         <div className="space-y-6">
           <div>
-            <h1 className="font-heading text-3xl font-medium mb-2">
-              {product.name}
-            </h1>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <h1 className="font-heading text-3xl font-medium mb-2">
+                {product.name}
+              </h1>
+              <Badge variant={product.inStock ? "default" : "destructive"}>
+                {product.inStock ? "In Stock" : "Out of Stock"}
+              </Badge>
+            </div>
             <div className="flex items-center gap-3">
               <span className="font-body text-xl font-medium text-price">
-                Rp {product.price.toLocaleString()}
+                $ {product.price.toLocaleString()}
               </span>
             </div>
           </div>
@@ -88,34 +106,54 @@ const ProductDetail = ({ product }: { product: Product }) => {
             </p>
           )}
 
-          {/* Size Selection */}
-          {product.size && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="font-body text-sm font-medium">
-                  Size: {selectedSize || product.size}
-                </label>
-                <Button variant="link" className="font-body text-sm p-0 h-auto">
-                  Size Guide
-                </Button>
-              </div>
-              <Select
-                value={selectedSize || product.size}
-                onValueChange={setSelectedSize}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select size" />
-                </SelectTrigger>
-                <SelectContent>
-                  {["sm", "md", "lg", "xl"].map((size) => (
-                    <SelectItem key={size} value={size}>
-                      {size.toUpperCase()}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="font-body text-sm font-medium">
+                Size: {selectedSize}
+              </label>
+              <Button variant="link" className="font-body text-sm p-0 h-auto">
+                Size Guide
+              </Button>
             </div>
-          )}
+            <Select value={selectedSize} onValueChange={setSelectedSize}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select size" />
+              </SelectTrigger>
+              <SelectContent>
+                {PRODUCT_SIZES.map((size) => (
+                  <SelectItem key={size.value} value={size.value}>
+                    {size.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-3">
+            <label className="font-body text-sm font-medium">Color</label>
+            <div className="flex flex-wrap gap-3">
+              {PRODUCT_COLORS.map((c) => (
+                <label key={c.value} className="cursor-pointer">
+                  <input
+                    type="radio"
+                    name="color"
+                    value={c.value}
+                    checked={selectedColor === c.value}
+                    onChange={() => setSelectedColor(c.value)}
+                    className="hidden"
+                  />
+                  <div
+                    className={`h-8 w-8 rounded-full border-2 ${
+                      selectedColor === c.value
+                        ? "border-black"
+                        : "border-gray-300"
+                    }`}
+                    style={{ backgroundColor: c.value }}
+                  />
+                </label>
+              ))}
+            </div>
+          </div>
 
           {/* Quantity */}
           <div className="space-y-3">
@@ -149,10 +187,9 @@ const ProductDetail = ({ product }: { product: Product }) => {
             Add to Bag
           </Button>
 
-          {/* Free Delivery Info */}
           <div className="p-4 bg-muted rounded-sm">
             <p className="font-body text-sm text-foreground">
-              Free delivery for orders over 100€.
+              Free delivery for orders over 100$.
             </p>
           </div>
 
@@ -164,7 +201,7 @@ const ProductDetail = ({ product }: { product: Product }) => {
               <CollapsibleTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="w-full justify-between p-0 h-auto font-body text-sm font-medium"
+                  className="w-full justify-between p-2 h-auto font-body text-sm font-medium"
                 >
                   Details
                   <ChevronDown
@@ -176,62 +213,7 @@ const ProductDetail = ({ product }: { product: Product }) => {
               </CollapsibleTrigger>
               <CollapsibleContent className="mt-3">
                 <div className="font-body text-sm text-muted-foreground space-y-2">
-                  <p>Premium quality materials</p>
-                  <p>Handcrafted with attention to detail</p>
-                  <p>Sustainable and ethically sourced</p>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-
-            <Separator />
-
-            <Collapsible open={warrantyOpen} onOpenChange={setWarrantyOpen}>
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-between p-0 h-auto font-body text-sm font-medium"
-                >
-                  Warranty
-                  <ChevronDown
-                    className={`h-4 w-4 transition-transform ${
-                      warrantyOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-3">
-                <div className="font-body text-sm text-muted-foreground space-y-2">
-                  <p>2-year international warranty</p>
-                  <p>Covers manufacturing defects</p>
-                  <p>Easy return and exchange policy</p>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-
-            <Separator />
-
-            <Collapsible
-              open={maintenanceOpen}
-              onOpenChange={setMaintenanceOpen}
-            >
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-between p-0 h-auto font-body text-sm font-medium"
-                >
-                  Maintenance
-                  <ChevronDown
-                    className={`h-4 w-4 transition-transform ${
-                      maintenanceOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-3">
-                <div className="font-body text-sm text-muted-foreground space-y-2">
-                  <p>Care instructions included</p>
-                  <p>Professional cleaning services available</p>
-                  <p>Lifetime maintenance support</p>
+                  {product.description}
                 </div>
               </CollapsibleContent>
             </Collapsible>

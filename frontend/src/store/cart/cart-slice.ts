@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Cart, CartItem, Product } from "@/features/shop/types";
+import cookieService from "@/core/services/local/cookie-service";
 
 interface CartState extends Cart {
   isOpen: boolean;
@@ -18,21 +19,43 @@ const calculateTotals = (items: CartItem[]) => {
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
-  const shipping = subtotal > 100 ? 0 : 10;
+  const shipping = subtotal >= 100 ? 0 : 10;
   const total = subtotal + shipping;
   return { subtotal, shipping, total };
+};
+
+const persistCart = (state: CartState) => {
+  cookieService.set("cart", JSON.stringify(state));
 };
 
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setIsOpen: (state: CartState, action: PayloadAction<boolean>) => {
+    setInitialCart: (
+      state,
+      action: PayloadAction<{
+        items: [];
+        total: number;
+        subtotal: number;
+        shipping: number;
+      }>
+    ) => {
+      const { items, shipping, subtotal, total } = action.payload;
+
+      state.items = items;
+      state.total = total;
+      state.subtotal = subtotal;
+      state.shipping = shipping;
+      state.isOpen = false;
+    },
+
+    setIsOpen: (state, action: PayloadAction<boolean>) => {
       state.isOpen = action.payload;
     },
 
     addItem: (
-      state: CartState,
+      state,
       action: PayloadAction<{
         product: Product;
         quantity?: number;
@@ -50,7 +73,6 @@ export const cartSlice = createSlice({
       );
 
       if (existingItemIndex > -1) {
-        // update quantity if item already exists
         state.items[existingItemIndex].quantity += quantity;
       } else {
         const newItem: CartItem = {
@@ -64,15 +86,17 @@ export const cartSlice = createSlice({
       }
 
       Object.assign(state, calculateTotals(state.items));
+      persistCart(state);
     },
 
-    removeItem: (state: CartState, action: PayloadAction<string>) => {
+    removeItem: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
       Object.assign(state, calculateTotals(state.items));
+      persistCart(state);
     },
 
     updateQuantity: (
-      state: CartState,
+      state,
       action: PayloadAction<{ id: string; quantity: number }>
     ) => {
       const { id, quantity } = action.payload;
@@ -84,13 +108,20 @@ export const cartSlice = createSlice({
         );
       }
       Object.assign(state, calculateTotals(state.items));
+      persistCart(state);
     },
 
-    clearCart: (state: CartState) => {
+    clearCart: (state) => {
       state.items = [];
       state.total = 0;
       state.subtotal = 0;
       state.shipping = 0;
+      persistCart(state);
     },
   },
 });
+
+export const { setIsOpen, addItem, removeItem, updateQuantity, clearCart } =
+  cartSlice.actions;
+
+export default cartSlice.reducer;

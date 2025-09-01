@@ -99,11 +99,9 @@ const AllProducts = ({ products }: { products: Product[] }) => {
                 />
               </TableHead>
               <TableHead>Product</TableHead>
-              <TableHead>SKU</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Price</TableHead>
-              <TableHead>Category</TableHead>
               <TableHead className="w-12"></TableHead>
             </TableRow>
           </TableHeader>
@@ -133,9 +131,7 @@ const AllProducts = ({ products }: { products: Product[] }) => {
                     </div>
                   </div>
                 </TableCell>
-                {/* <TableCell className="text-muted-foreground">
-                  SKU-{product._id.padStart(4, "0")}
-                </TableCell> */}
+
                 <TableCell>
                   <Badge variant={product.inStock ? "default" : "destructive"}>
                     {product.inStock ? "In Stock" : "Out of Stock"}
@@ -143,7 +139,6 @@ const AllProducts = ({ products }: { products: Product[] }) => {
                 </TableCell>
                 <TableCell>{product.totalStock || 0}</TableCell>
                 <TableCell>${product.price}</TableCell>
-                {/* <TableCell>{product.category}</TableCell> */}
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -152,16 +147,21 @@ const AllProducts = ({ products }: { products: Product[] }) => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Eye className="mr-2 h-4 w-4" />
-                        <Link to={`/product/${product._id}`}>View</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Edit className="mr-2 h-4 w-4" />
-                        <Link to={`/admin/products/${product._id}/edit`}>
+                      <Link to={`/product/${product.slug}`}>
+                        <DropdownMenuItem className="cursor-pointer">
+                          <Eye className="mr-2 h-4 w-4" />
+                          View
+                        </DropdownMenuItem>
+                      </Link>
+                      <Link
+                        className="cursor-pointer"
+                        to={`/admin/products/${product.slug}/edit`}
+                      >
+                        <DropdownMenuItem>
+                          <Edit className="mr-2 h-4 w-4" />
                           Edit
-                        </Link>
-                      </DropdownMenuItem>
+                        </DropdownMenuItem>
+                      </Link>
                       <DropdownMenuItem className="text-destructive">
                         <Trash2 className="mr-2 h-4 w-4" />
                         Delete

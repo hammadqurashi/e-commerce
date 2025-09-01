@@ -6,11 +6,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 
 const ProductDetailPage = () => {
-  const { id: productId } = useParams();
+  const { productSlug } = useParams();
 
   const { data, isFetching } = useQuery({
     queryKey: ["all-products"],
-    queryFn: () => productService.getById(productId!),
+    queryFn: () => productService.getBySlug(productSlug!),
     refetchOnWindowFocus: false,
   });
 

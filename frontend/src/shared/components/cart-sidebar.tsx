@@ -60,6 +60,18 @@ export function CartSidebar() {
                           Size: {item.size}
                         </p>
                       )}
+                      {item.color && (
+                        <div className="mb-1 ">
+                          <div
+                            className="rounded-full "
+                            style={{
+                              backgroundColor: item.color,
+                              width: "16px",
+                              height: "16px",
+                            }}
+                          ></div>
+                        </div>
+                      )}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Button
@@ -98,7 +110,7 @@ export function CartSidebar() {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="font-body text-sm font-medium">
-                            Rp{" "}
+                            ${" "}
                             {(
                               item.product.price * item.quantity
                             ).toLocaleString()}
@@ -125,16 +137,16 @@ export function CartSidebar() {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between font-body text-sm">
                   <span>Subtotal</span>
-                  <span>Rp {subtotal.toLocaleString()}</span>
+                  <span>$ {subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between font-body text-sm">
                   <span>Free Standard Delivery (3 working days)</span>
-                  <span>Rp {shipping.toLocaleString()}</span>
+                  <span>$ {shipping.toLocaleString()}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-body text-base font-medium">
                   <span>Total</span>
-                  <span>Rp {total.toLocaleString()}</span>
+                  <span>$ {total.toLocaleString()}</span>
                 </div>
                 <p className="font-body text-xs text-muted-foreground">
                   (Prices include VAT.)

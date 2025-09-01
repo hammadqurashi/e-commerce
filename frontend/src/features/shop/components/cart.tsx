@@ -59,7 +59,7 @@ const Cart = () => {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-4 pb-6 border-b border-border last:border-b-0"
+                className="flex gap-4 pb-6 border-b border-gray-200 last:border-b-0"
               >
                 <div className="w-24 h-24 rounded-sm overflow-hidden bg-gray-50 flex-shrink-0">
                   <img
@@ -76,19 +76,23 @@ const Cart = () => {
                         {item.product.name}
                       </h3>
                       {item.size && (
-                        <p className="font-body text-xs text-muted-foreground">
-                          Ring Size: {item.size}
+                        <p className="font-body text-xs text-muted-foreground mb-1">
+                          Size: {item.size}
                         </p>
                       )}
+                      {item.color && (
+                        <div className="mb-1 ">
+                          <div
+                            className="rounded-full "
+                            style={{
+                              backgroundColor: item.color,
+                              width: "16px",
+                              height: "16px",
+                            }}
+                          ></div>
+                        </div>
+                      )}
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6 text-muted-foreground hover:text-foreground flex-shrink-0"
-                      onClick={() => dispatch(cartActions.removeItem(item.id))}
-                    >
-                      <Heart className="h-4 w-4" />
-                    </Button>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -121,20 +125,10 @@ const Cart = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <span className="font-body text-sm font-medium">
-                        Rp{" "}
+                      <span className="text-sm font-bold">
+                        ${" "}
                         {(item.product.price * item.quantity).toLocaleString()}
                       </span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 text-muted-foreground hover:text-foreground"
-                        onClick={() =>
-                          dispatch(cartActions.removeItem(item.id))
-                        }
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
                     </div>
                   </div>
 
@@ -161,16 +155,16 @@ const Cart = () => {
             <div className="space-y-3 mb-4">
               <div className="flex justify-between font-body text-sm">
                 <span>Subtotal</span>
-                <span>Rp {subtotal.toLocaleString()}</span>
+                <span>$ {subtotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between font-body text-sm">
                 <span>Free Standard Delivery (3 working days)</span>
-                <span>Rp {shipping.toLocaleString()}</span>
+                <span>$ {shipping.toLocaleString()}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-body text-base font-medium">
                 <span>Total</span>
-                <span>Rp {total.toLocaleString()}</span>
+                <span>$ {total.toLocaleString()}</span>
               </div>
               <p className="font-body text-xs text-muted-foreground">
                 (Prices include VAT.)

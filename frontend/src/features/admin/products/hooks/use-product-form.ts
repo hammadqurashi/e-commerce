@@ -15,7 +15,6 @@ const DEFAULT_VALUES = {
   price: 0,
   colour: "",
   totalStock: 0,
-  inStock: false,
   size: "S",
 };
 
@@ -23,10 +22,9 @@ const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().min(1, "Product description is required"),
   price: z.number().min(1, "Price must be greater than 0"),
-  colour: z.enum(PRODUCT_COLORS.map(({ value }) => value)).optional(),
-  size: z.enum(PRODUCT_SIZES.map(({ value }) => value)).optional(),
+  colour: z.enum(PRODUCT_COLORS.map(({ value }) => value)),
+  size: z.enum(PRODUCT_SIZES.map(({ value }) => value)),
   totalStock: z.number().min(0, "Stock cannot be negative"),
-  inStock: z.boolean(),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
@@ -61,7 +59,7 @@ const useProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
     }
 
     if (res.success) {
-      toast.success(res.message);
+      toast.success(res.msg);
 
       if (!isUpdate) {
         navigate("/admin/products");
@@ -71,7 +69,7 @@ const useProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
     }
 
     toast.error(
-      res.message ||
+      res.msg ||
         `Error ${
           isUpdate ? "updating" : "creating"
         } product, please try again later.`
@@ -86,7 +84,6 @@ const useProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
   };
 
   const removeTag = (tagIndex: number) => {
-    console.log(tagIndex);
     setTags((prev) => prev.filter((_, i) => i !== tagIndex));
   };
 

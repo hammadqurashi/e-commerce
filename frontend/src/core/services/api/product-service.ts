@@ -1,5 +1,6 @@
 import type { Product } from "@/features/shop/types";
 import BaseService from "./base-service";
+import { parse, build, omit, keep } from "search-params";
 
 class ProductService extends BaseService {
   async create(payload: any) {
@@ -15,9 +16,9 @@ class ProductService extends BaseService {
     return res;
   }
 
-  async getById(productId: string) {
+  async getBySlug(productSlug: string) {
     const res = await this.httpService.get<Product | undefined>(
-      `/products/${productId}`
+      `/products/${productSlug}`
     );
 
     if (res.success) {
@@ -26,13 +27,31 @@ class ProductService extends BaseService {
   }
 
   async getAll() {
-    const res = await this.httpService.get<Product[]>("/products");
+    const res = await this.httpService.get<Product[]>(`/products`);
 
     if (res.success) {
       return res.data;
     }
 
     return [];
+  }
+
+  async getPaginated(
+    filters: { sizes: string[]; colors: string[] },
+    page: number
+  ) {
+    const filterSearchParams = build(filters, { arrayFormat: "none" });
+
+    const res = await this.httpService.get<{
+      products: Product[];
+      totalPages: number;
+    }>(`/paginated-products?page=${page}&limit=12&${filterSearchParams}`);
+
+    if (res.success) {
+      return res.data;
+    }
+
+    return { products: [], totalPages: 0 };
   }
 
   async delete(productId: string) {
