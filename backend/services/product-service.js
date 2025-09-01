@@ -128,7 +128,7 @@ class ProductService extends BaseService {
       let images;
 
       if (Array.isArray(rawImages) && rawImages.length > 0) {
-        images = this.uploadImages(rawImages);
+        images = await this.uploadImages(rawImages);
       }
 
       const product = await Product.findByIdAndUpdate(id, {
