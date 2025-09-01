@@ -136,16 +136,14 @@ const ProductSidebar = ({
 
   if (isMobile) {
     return (
-      <div>
-        <Sheet open={isOpenMobileFilters} onOpenChange={setIsOpenMobileFilters}>
-          <SheetContent side="left" className="w-72 gap-0">
-            <SheetHeader className="px-4 py-2">
-              <SheetTitle>Filters</SheetTitle>
-            </SheetHeader>
-            <div>{SidebarContent}</div>
-          </SheetContent>
-        </Sheet>
-      </div>
+      <Sheet open={isOpenMobileFilters} onOpenChange={setIsOpenMobileFilters}>
+        <SheetContent side="left" className="w-72 gap-0">
+          <SheetHeader className="px-4 py-2">
+            <SheetTitle>Filters</SheetTitle>
+          </SheetHeader>
+          <div className="p-2">{SidebarContent}</div>
+        </SheetContent>
+      </Sheet>
     );
   }
 
