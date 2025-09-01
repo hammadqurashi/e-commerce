@@ -183,6 +183,7 @@ const ProductDetail = ({ product }: { product: Product }) => {
           <Button
             className="w-full font-body bg-primary text-primary-foreground"
             onClick={handleAddToCart}
+            disabled={!product.inStock}
           >
             Add to Bag
           </Button>
