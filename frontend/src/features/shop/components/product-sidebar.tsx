@@ -1,5 +1,5 @@
 import { useState, memo, useMemo } from "react";
-import { ChevronDown, ChevronRight, Filter } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import {
   Collapsible,
@@ -8,7 +8,6 @@ import {
 } from "@/shared/components/ui/collapsible";
 import {
   Sheet,
-  SheetTrigger,
   SheetContent,
   SheetHeader,
   SheetTitle,
