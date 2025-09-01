@@ -13,7 +13,10 @@ class AuthService extends BaseService {
   }
 
   async getUserDetailsByToken() {
-    const res = await this.httpService.get<IUser | null>("/me");
+    const res = await this.httpService.get<{
+      user: IUser;
+      role: "admin" | "user";
+    } | null>("/auth/me");
 
     if (res.success) {
       return res.data;
