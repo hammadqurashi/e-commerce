@@ -29,8 +29,13 @@ import useProductForm from "../hooks/use-product-form";
 import LoadingSpinner from "@/shared/components/ui/loading-spinner";
 import { PRODUCT_COLORS, PRODUCT_SIZES } from "@/core/constants";
 import type { Product } from "@/features/shop/types";
+import { useParams } from "react-router-dom";
 
 const ProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
+  const { productSlug } = useParams();
+
+  const isUpdate = !!productSlug;
+
   const {
     addTag,
     form,
@@ -177,13 +182,14 @@ const ProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
                 {/* Thumbnails */}
                 {images.length > 0 && (
                   <div className="flex flex-wrap gap-4 mt-4">
-                    {images.map((file, index) => {
-                      const previewUrl = URL.createObjectURL(file);
+                    {images.map((img, index) => {
+                      const previewUrl =
+                        img instanceof File ? URL.createObjectURL(img) : img;
                       return (
                         <div key={index} className="relative w-24 h-24">
                           <img
                             src={previewUrl}
-                            alt={file.name}
+                            alt={img?.name}
                             className="w-full h-full object-cover rounded"
                           />
                           <button
@@ -192,7 +198,9 @@ const ProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
                               setImages((prev) =>
                                 prev.filter((_, i) => i !== index)
                               );
-                              URL.revokeObjectURL(previewUrl);
+                              if (img instanceof File) {
+                                URL.revokeObjectURL(previewUrl);
+                              }
                             }}
                             className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1"
                           >
@@ -336,7 +344,7 @@ const ProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
                 {form.formState.isSubmitting ? (
                   <LoadingSpinner size="sm" />
                 ) : (
-                  "Create Product"
+                  `${isUpdate ? "Update" : "Create"} Product`
                 )}
               </Button>
             </div>

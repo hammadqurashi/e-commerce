@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -32,11 +32,11 @@ type ProductFormData = z.infer<typeof productSchema>;
 const useProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<any[]>([]);
 
-  const { id: productId } = useParams();
+  const { productSlug } = useParams();
 
-  const isUpdate = !!productId;
+  const isUpdate = !!productSlug;
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -45,6 +45,13 @@ const useProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (isUpdate && defaultValues) {
+      setTags([...defaultValues.tags]);
+      setImages([...defaultValues.images]);
+    }
+  }, [defaultValues]);
+
   const onSubmit = async (data: ProductFormData) => {
     const formData = new FormData();
 
@@ -52,8 +59,8 @@ const useProductForm = ({ defaultValues }: { defaultValues?: Product }) => {
 
     let res;
 
-    if (isUpdate) {
-      res = await productService.update(productId, formData);
+    if (isUpdate && defaultValues) {
+      res = await productService.update(defaultValues._id, formData);
     } else {
       res = await productService.create(formData);
     }
