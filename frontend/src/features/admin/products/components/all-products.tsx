@@ -28,8 +28,16 @@ import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { BtnLink } from "@/shared/components/ui/btn-link";
 import type { Product } from "@/features/shop/types";
+import productService from "@/core/services/api/product-service";
+import { toast } from "sonner";
 
-const AllProducts = ({ products }: { products: Product[] }) => {
+const AllProducts = ({
+  products,
+  refetch,
+}: {
+  products: Product[];
+  refetch: () => void;
+}) => {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -38,7 +46,7 @@ const AllProducts = ({ products }: { products: Product[] }) => {
       products.filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
       ),
-    [products]
+    [products, searchTerm]
   );
 
   const handleSelectAll = (checked: boolean) => {
@@ -57,6 +65,18 @@ const AllProducts = ({ products }: { products: Product[] }) => {
     }
   };
 
+  const deleteProduct = async (productId: string) => {
+    const res = await productService.delete(productId);
+
+    if (res.success) {
+      toast.success(res.msg);
+      refetch();
+      return;
+    }
+
+    toast.success(res.msg);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -70,7 +90,6 @@ const AllProducts = ({ products }: { products: Product[] }) => {
         </BtnLink>
       </div>
 
-      {/* Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -162,7 +181,10 @@ const AllProducts = ({ products }: { products: Product[] }) => {
                           Edit
                         </DropdownMenuItem>
                       </Link>
-                      <DropdownMenuItem className="text-destructive">
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onClick={() => deleteProduct(product._id)}
+                      >
                         <Trash2 className="mr-2 h-4 w-4" />
                         Delete
                       </DropdownMenuItem>

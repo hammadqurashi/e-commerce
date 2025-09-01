@@ -4,7 +4,11 @@ import PageSpinner from "@/shared/components/ui/page-spinner";
 import { useQuery } from "@tanstack/react-query";
 
 const AllProductsPage = () => {
-  const { data = [], isFetching } = useQuery({
+  const {
+    data = [],
+    isFetching,
+    refetch,
+  } = useQuery({
     queryKey: ["all-products"],
     queryFn: () => productService.getAll(),
     refetchOnWindowFocus: false,
@@ -14,7 +18,7 @@ const AllProductsPage = () => {
     return <PageSpinner />;
   }
 
-  return <AllProducts products={data} />;
+  return <AllProducts products={data} refetch={refetch} />;
 };
 
 export default AllProductsPage;
