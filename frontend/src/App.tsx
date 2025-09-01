@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import RootProvider from "./shared/providers";
+import { AUTH_ROUTE } from "./core/routes";
+import AuthPage from "./pages/public/auth-page";
+import PublicLayout from "./shared/layout/public-layout";
+import Products from "./pages/public/products";
+import ProductDetailPage from "./pages/public/product-detail";
+import CartPage from "./pages/public/cart-page";
+import AdminLayout from "./shared/layout/admin-layout";
+import AllProductsPage from "./pages/private/all-products";
+import CreateProduct from "./pages/private/create-product";
+import UpdateProduct from "./pages/private/update-product";
+import NotFound from "./pages/public/not-found";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <RootProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Auth Routes */}
+          <Route path={AUTH_ROUTE} element={<AuthPage />} />
+
+          {/* Public Web Pages */}
+          <Route path="/" element={<PublicLayout />}>
+            <Route index element={<Products />} />
+            <Route path="product/:id" element={<ProductDetailPage />} />
+            <Route path="cart" element={<CartPage />} />
+          </Route>
+
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="products" element={<AllProductsPage />} />
+            <Route path="products/create" element={<CreateProduct />} />
+            <Route path="products/:id/edit" element={<UpdateProduct />} />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </RootProvider>
+  );
 }
 
-export default App
+export default App;
