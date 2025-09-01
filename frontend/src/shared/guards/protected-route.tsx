@@ -1,6 +1,6 @@
 import type { RootState } from "@/store";
 import { useSelector } from "react-redux";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
   const role = useSelector((state: RootState) => state.auth.role);

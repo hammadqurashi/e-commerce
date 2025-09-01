@@ -7,7 +7,6 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
-import { Badge } from "@/shared/components/ui/badge";
 import { cn } from "@/core/lib/utils";
 
 const navigation = [

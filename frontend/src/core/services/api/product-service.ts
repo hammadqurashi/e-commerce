@@ -1,6 +1,6 @@
 import type { Product } from "@/features/shop/types";
 import BaseService from "./base-service";
-import { parse, build, omit, keep } from "search-params";
+import { build } from "search-params";
 
 class ProductService extends BaseService {
   async create(payload: any) {

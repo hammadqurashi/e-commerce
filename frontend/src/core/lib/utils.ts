@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const replaceUrlVariables = (str: string, params: any) => {
-  const stripedText = str.replace(/{([^{}]+)}/g, (match, key) => {
+  const stripedText = str.replace(/{([^{}]+)}/g, (_, key) => {
     return params[key] !== undefined ? params[key] : "";
   });
   return stripedText;
