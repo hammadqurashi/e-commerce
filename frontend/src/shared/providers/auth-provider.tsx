@@ -17,7 +17,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
         .getUserDetailsByToken()
         .then((res) => {
           if (res) {
-            dispatch(authActions.setUser({ user: res }));
+            dispatch(authActions.setUser({ user: res.user, role: res.role }));
           }
         })
         .finally(() => {

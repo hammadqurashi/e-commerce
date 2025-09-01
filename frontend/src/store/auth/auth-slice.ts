@@ -6,12 +6,14 @@ interface AuthState {
   isLoggedIn: boolean;
   user: IUser | null;
   accessToken: string;
+  role: "user" | "admin";
 }
 
 const initialState: AuthState = {
   isLoggedIn: false,
   user: null,
   accessToken: "",
+  role: "user",
 };
 
 export const authSlice = createSlice({
@@ -22,12 +24,14 @@ export const authSlice = createSlice({
       state: AuthState,
       action: PayloadAction<{
         token: string;
+        role: "user" | "admin";
       }>
     ) {
-      const { token } = action.payload;
+      const { token, role } = action.payload;
 
       state.isLoggedIn = true;
       state.accessToken = token;
+      state.role = role;
 
       jwtService.setAuthSession({ accessToken: token });
     },
@@ -36,12 +40,14 @@ export const authSlice = createSlice({
       state: AuthState,
       action: PayloadAction<{
         user: IUser;
+        role: "user" | "admin";
       }>
     ) {
-      const { user } = action.payload;
+      const { user, role } = action.payload;
 
       state.isLoggedIn = true;
       state.user = user;
+      state.role = role;
     },
     logout(state: AuthState) {
       state.isLoggedIn = false;

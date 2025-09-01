@@ -49,16 +49,16 @@ const useSignupForm = () => {
     const res = await authService.signup(data);
 
     if (res.success && res.data) {
-      toast.success(res.message);
+      toast.success(res.msg);
       const { token } = res.data;
-      dispatch(authActions.setAuth({ token }));
+      dispatch(authActions.setAuth({ token, role: "user" }));
 
       navigate("/");
 
       return;
     }
 
-    toast.error(res.message || "Something went wrong, please try again later.");
+    toast.error(res.msg || "Something went wrong, please try again later.");
   };
 
   return { form, onSubmit };

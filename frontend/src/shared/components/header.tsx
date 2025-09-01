@@ -7,10 +7,8 @@ import { cartActions } from "@/store/cart";
 import { BtnLink } from "./ui/btn-link";
 
 export function Header() {
-  const {
-    cart: { items },
-    auth: { isLoggedIn },
-  } = useSelector((state: RootState) => state);
+  const items = useSelector((state: RootState) => state.cart.items);
+  const { isLoggedIn, role } = useSelector((state: RootState) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -46,9 +44,20 @@ export function Header() {
             </Button>
 
             {isLoggedIn ? (
-              <Button variant="ghost" size="icon" className="relative">
-                <User className="h-5 w-5" />
-              </Button>
+              role === "admin" ? (
+                <BtnLink
+                  href="/admin/products"
+                  variant="ghost"
+                  size="icon"
+                  className="relative"
+                >
+                  <User className="h-5 w-5" />
+                </BtnLink>
+              ) : (
+                <Button variant="ghost" size="icon" className="relative">
+                  <User className="h-5 w-5" />
+                </Button>
+              )
             ) : (
               <BtnLink href="/auth">Login</BtnLink>
             )}

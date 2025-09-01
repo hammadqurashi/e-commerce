@@ -31,12 +31,13 @@ const useLoginForm = () => {
     const res = await authService.login(data);
 
     if (res.success && res.data) {
-      toast.success(res.message);
+      toast.success(res.msg);
       const { token, role } = res.data;
-      dispatch(authActions.setAuth({ token }));
+      dispatch(authActions.setAuth({ token, role }));
 
       if (role === "admin") {
         navigate("/admin/products");
+        return;
       }
 
       navigate("/");
@@ -44,7 +45,7 @@ const useLoginForm = () => {
       return;
     }
 
-    toast.error(res.message || "Something went wrong, please try again later.");
+    toast.error(res.msg || "Something went wrong, please try again later.");
   };
 
   return { form, onSubmit };
