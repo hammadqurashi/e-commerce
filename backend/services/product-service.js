@@ -1,39 +1,34 @@
 import BaseService from "./base-service.js";
 import Product from "../models/product.js";
 import cloudinary from "../lib/cloudinary.js";
+import { createReadStream } from "fs";
 
 class ProductService extends BaseService {
   async uploadImages(images = []) {
     if (!images || images.length === 0) return [];
 
-    const uploadPromises = images.map((img) =>
-      cloudinary.uploader
-        .upload_stream(img, { folder: "products" }, (err, result) => {
-          if (err) throw err;
+    const uploadPromises = images.map((img) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "products" },
+          (err, result) => {
+            if (err) return reject(err);
+            resolve(result.secure_url);
+          }
+        );
 
-          return result.secure_url;
-        })
-        .end(img.buffer)
-    );
+        stream.end(img.buffer);
+      });
+    });
 
-    const imageURLsArr = await Promise.all(uploadPromises);
-    return imageURLsArr;
+    return Promise.all(uploadPromises);
   }
 
   async create(data, rawImages) {
     try {
-      const {
-        name,
-        description,
-        tags,
-        price,
-        colour,
-        size,
-        inStock,
-        totalStock,
-      } = data;
+      const { name, description, tags, price, colour, size, totalStock } = data;
 
-      const images = this.uploadImages(rawImages);
+      const images = await this.uploadImages(rawImages);
 
       const product = new Product({
         name,
@@ -43,7 +38,7 @@ class ProductService extends BaseService {
         colour,
         size,
         images,
-        inStock,
+        inStock: Number(totalStock) > 0,
         totalStock,
       });
 
@@ -65,9 +60,51 @@ class ProductService extends BaseService {
     }
   }
 
-  async getById(id) {
+  async getPaginated(searchParams) {
     try {
-      const product = await Product.findById(id).lean();
+      const {
+        page = 1,
+        limit = 12,
+        sizes = [],
+        colors = [],
+      } = searchParams || {};
+
+      const filterQuery = {};
+
+      if (sizes.length > 0) {
+        filterQuery.size = {
+          $in: Array.isArray(sizes) ? [...sizes] : [sizes],
+        };
+      }
+
+      if (colors.length > 0) {
+        filterQuery.colour = {
+          $in: Array.isArray(colors) ? [...colors] : [colors],
+        };
+      }
+
+      const totalProducts = await Product.countDocuments(filterQuery);
+
+      const products = await Product.find(filterQuery)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean();
+
+      const totalPages = Math.ceil(totalProducts / limit);
+
+      return this.handleResponse(200, true, "Products.", {
+        products,
+        totalPages,
+      });
+    } catch (err) {
+      return this.handleError(err);
+    }
+  }
+
+  async getBySlug(slug) {
+    try {
+      const product = await Product.findOne({ slug }).lean();
 
       if (!product) {
         return this.handleResponse(404, false, "Product not found.");
@@ -86,16 +123,7 @@ class ProductService extends BaseService {
 
   async update(id, data, rawImages) {
     try {
-      const {
-        name,
-        description,
-        tags,
-        price,
-        colour,
-        size,
-        inStock,
-        totalStock,
-      } = data;
+      const { name, description, tags, price, colour, size, totalStock } = data;
 
       let images;
 
@@ -111,7 +139,7 @@ class ProductService extends BaseService {
         colour,
         size,
         images,
-        inStock,
+        inStock: Number(totalStock) > 0,
         totalStock,
       });
 

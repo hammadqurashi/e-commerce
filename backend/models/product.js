@@ -7,7 +7,6 @@ const productSchema = new Schema(
     name: { type: String, required: [true, "Product name is required."] },
     slug: {
       type: String,
-      required: [true, "Product slug is required."],
       unique: true,
     },
     description: {
@@ -28,7 +27,7 @@ const productSchema = new Schema(
     },
     size: {
       type: String,
-      enum: ["sm", "md", "lg", "xl"],
+      enum: ["S", "M", "L", "XL"],
     },
     images: {
       type: [String],

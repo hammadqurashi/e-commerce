@@ -29,6 +29,7 @@ router.delete(
 
 // public
 router.get("/products", productController.getAll);
-router.get("/products/:productId", productController.getById);
+router.get("/paginated-products", productController.getPaginated);
+router.get("/products/:productSlug", productController.getBySlug);
 
 export default router;

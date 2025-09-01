@@ -1,3 +1,4 @@
+import { parse } from "search-params";
 import productService from "../services/product-service.js";
 
 const productController = {
@@ -28,11 +29,19 @@ const productController = {
     return res.status(status).json({ success, msg, data });
   },
 
-  getById: async (req, res) => {
-    const { productId } = req.params;
+  getPaginated: async (req, res) => {
+    const { data, msg, status, success } = await productService.getPaginated(
+      req.query
+    );
 
-    const { data, msg, status, success } = await productService.getById(
-      productId
+    return res.status(status).json({ success, msg, data });
+  },
+
+  getBySlug: async (req, res) => {
+    const { productSlug } = req.params;
+
+    const { data, msg, status, success } = await productService.getBySlug(
+      productSlug
     );
 
     return res.status(status).json({ success, msg, data });
