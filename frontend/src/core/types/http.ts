@@ -1,11 +1,11 @@
-import { AxiosInstance } from "axios";
+import type { AxiosInstance } from "axios";
 
 export interface IApiClient extends AxiosInstance {}
 
 export interface IHttpResponse<T> {
   data: T;
   success: boolean;
-  message: string;
+  msg: string;
 }
 
 export interface IReqAction<T> {

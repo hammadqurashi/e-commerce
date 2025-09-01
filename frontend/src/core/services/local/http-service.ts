@@ -22,7 +22,7 @@ export class HttpService {
       .catch((err) => {
         return {
           success: false,
-          message: err.response?.message ?? "Something went wrong!",
+          msg: err.response?.msg ?? "Something went wrong!",
         };
       });
   }
@@ -41,7 +41,7 @@ export class HttpService {
         console.log(err);
         return {
           success: false,
-          message: err.response?.data?.message ?? "Something went wrong!",
+          msg: err.response?.data?.msg ?? "Something went wrong!",
         };
       });
   }
@@ -60,7 +60,7 @@ export class HttpService {
         console.log(err);
         return {
           success: false,
-          message: err.response?.data?.message ?? "Something went wrong!",
+          msg: err.response?.data?.msg ?? "Something went wrong!",
         };
       });
   }
@@ -79,7 +79,7 @@ export class HttpService {
         console.log(err);
         return {
           success: false,
-          message: err.response?.data?.message ?? "Something went wrong!",
+          msg: err.response?.data?.msg ?? "Something went wrong!",
         };
       });
   }
@@ -93,7 +93,7 @@ export class HttpService {
       .catch((err) => {
         return {
           success: false,
-          message: err.response?.data?.message ?? "Something went wrong!",
+          msg: err.response?.data?.msg ?? "Something went wrong!",
         };
       });
   }
