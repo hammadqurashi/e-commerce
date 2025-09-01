@@ -64,18 +64,16 @@ class AuthService extends BaseService {
       const user = await User.findOne({ email }).lean();
 
       if (!user) {
-        return this.handleResponse(401, false, "Invalid credentials");
+        return this.handleResponse(400, false, "Invalid credentials");
       }
 
       const isCorrect = bcrypt.compareSync(password, user.password);
 
       if (!isCorrect) {
-        return this.handleResponse(401, false, "Invalid credentials");
+        return this.handleResponse(400, false, "Invalid credentials");
       }
 
-      let token;
-
-      jwt.sign(
+      const token = jwt.sign(
         {
           id: user._id,
           role: user.role,
@@ -131,7 +129,7 @@ class AuthService extends BaseService {
         {
           id: user._id,
         },
-        AppConfig.userJwtSecret,
+        AppConfig.jwtSecret,
         {
           expiresIn: "1h",
         }
@@ -153,7 +151,7 @@ class AuthService extends BaseService {
       const user = await User.findById(userId).lean();
 
       if (!user) {
-        return this.handleResponse(401, false, "UnAuthorized");
+        return this.handleResponse(400, false, "UnAuthorized");
       }
 
       const userDetails = {
@@ -164,7 +162,6 @@ class AuthService extends BaseService {
 
       return this.handleResponse(200, true, "Auth session.", {
         user: userDetails,
-        token,
         role: user.role,
       });
     } catch (err) {
